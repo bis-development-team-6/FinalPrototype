@@ -1,0 +1,134 @@
+from tkinter import *
+
+class Login_Window:
+    def __init__(self):
+        window = Tk()
+        window.title('Login')
+        window.configure(background = 'white')
+        photo = PhotoImage(file="P:\GWlogo.gif") # specify the path to your file
+        label = Label(window, bg = 'white', image=photo)  #put the image in a label to disdaply it in the window
+        label.grid(row = 0, column = 1) 
+        self.window = window
+        self.user_name = StringVar()
+        self.pass_word = StringVar()
+        Label(window, text = 'Username:').grid(row=3, sticky = W)
+        Label(window, text = 'Password:').grid(row=4, sticky = W)
+        Entry(window, textvariable = self.user_name).grid(row=3, column= 1)
+        Entry(window, textvariable = self.pass_word).grid(row = 4, column = 1)
+        self.label = Label(window).grid(row = 3)
+        Button(window, text = "Login", command = self.login).grid(row = 5, column = 1)
+        
+        window.mainloop()
+    
+    def login(self):
+        if self.user_name.get() == "Jim" and self.pass_word.get() == "Glamping!":
+            self.window.destroy()
+        else:
+            self.label = "Incorrect Usernname or Password, Please Try Again"
+        
+
+class InformationForm:
+    def __init__(self):
+        window = Tk()
+        window.title('Customer Information')
+        window.configure(background = 'white')
+        photo = PhotoImage(file="P:\GWlogo.gif") # specify the path to your file
+        label = Label(window, bg = 'white', image=photo)  #put the image in a label to disdaply it in the window
+        label.grid(row = 0, column = 1) 
+        self.window = window
+        self.customer_id = StringVar()
+        Label(window, text = "Customer ID").grid(row = 3, sticky = W)
+        Label(window, text = 'Customer Name').grid(row = 4, sticky = W)
+        Label(window, text = 'Customer E-Mail').grid(row = 5, sticky = W)
+        Label(window, text = "Street Address").grid(row = 8,  sticky = W)
+        Label(window, text = 'City').grid(row = 9, sticky = W)
+        Label(window, text = 'State').grid(row = 10, sticky = W)
+        Label(window, text = "Postal Code").grid(row = 11, sticky = W)
+        Label(window, text = 'Country').grid(row = 12, sticky = W)
+        Checkbutton(window, text="Ship To Customer").grid(row=6, sticky=W)
+        Checkbutton(window, text="In-Store Pickup").grid(row=7, sticky=W)
+        Entry(window, textvariable = self.customer_id).grid(row = 3, column = 1)
+        Entry(window).grid(row = 4, column = 1)
+        Entry(window).grid(row = 5, column = 1)
+        Entry(window).grid(row = 8, column = 1)
+        Entry(window).grid(row = 9, column = 1)
+        Entry(window).grid(row = 10, column = 1)
+        Entry(window).grid(row = 11, column = 1)
+        Entry(window).grid(row = 12, column = 1)
+        
+        
+        Button(window, text = "Submit", command = self.orderform).grid(row = 13)
+        window.mainloop()
+    
+    def orderform(self):
+        self.window.destroy()
+
+        OrderForm_Window(self.customer_id.get())
+        
+class OrderForm_Window:
+    def __init__(self, customerID):
+        root = Tk()
+        root.configure(background = 'white')
+        photo = PhotoImage(file="P:\GWlogo.gif") # specify the path to your file
+        label = Label(root, bg = 'white', image=photo)  #put the image in a label to disdaply it in the window
+        label.grid(row = 0, column = 2) 
+        self.root = root
+        root.title('Order Processing Form')
+        Label(root, bg = 'white', text="Customer ID", font = 'Arial 10 bold').grid(row=3, sticky = W)
+        Label(root, bg = 'white', text = 'Product Name', font = 'Arial 10 bold').grid(row = 4, sticky = W)
+        Label(root, bg = 'white', text = 'Price', font = 'Arial 10 bold').grid(row = 5, sticky = W)
+        Label(root, bg = 'white', text = 'Quantity', font = 'Arial 10 bold').grid(row = 6, sticky = W)
+        Label(root, bg = 'white', text = 'Discount (If Applicable)', font = 'Arial 10 bold').grid(row = 7, sticky = W)
+        Label(root, bg = 'white', text = '').grid(row = 8, column = 2)
+        self.customerid = StringVar()
+        self.productname = StringVar()
+        self.productprice = StringVar()
+        self.productquantity = StringVar()
+        self.totalpayment = StringVar()
+        self.purchasesummary = StringVar()
+        self.discount = StringVar()
+        self.customer = {"customer_id":None, "products":{}, "current_total":0}
+        self.sales_tax = 0
+        Entry(root, width = 50, textvariable = self.customerid).grid(row=3, column = 2)
+        Entry(root, width = 50,textvariable = self.productname).grid(row=4, column = 2)
+        Entry(root, width = 50,textvariable = self.productprice).grid(row=5, column = 2)
+        Entry(root, width = 50,textvariable = self.productquantity).grid(row=6, column = 2)
+        Entry(root, width = 50,textvariable = self.discount).grid(row=7, column = 2)     
+        self.label = Label(root, bg = 'white', textvariable = self.purchasesummary, font = 'Arial 10 bold').grid(row = 12, column = 2)
+        Button(root, bg = 'green', text = 'Add To Cart', font = 'Arial 10 bold', command = self.calc_total).grid(row = 10, column = 2)
+        Button(root, bg = 'red', text = 'Need Help?', font = 'Arial 12 bold').grid(row = 13, column = 3)
+        Button(root, bg = 'green', text = 'Complete Order', font = 'Arial 10 bold', command = self.completeOrder).grid(row = 11, column = 2)
+        root.mainloop()
+    def calc_total(self):
+        if self.customer["customer_id"] == None:
+            self.customer["customer_id"] = self.customerid.get()
+            
+        dictionary = self.customer["products"]
+        if self.productname.get() not in self.customer["products"]:
+           dictionary =  self.customer["products"]
+           dictionary[self.productname.get()] = [0,0]
+        dictionary[self.productname.get()][0] = dictionary[self.productname.get()][0] + int(self.productquantity.get())
+        
+        total = round(int(self.productquantity.get()) * float(self.productprice.get()),2) - \
+                round(int(self.productquantity.get()) * float(self.productprice.get()),2) * (float(self.discount.get())/100)
+        self.sales_tax = self.sales_tax + round(0.13 * int(self.productquantity.get()) * float(self.productprice.get()),2)
+        dictionary[self.productname.get()][1] = dictionary[self.productname.get()][1] + total
+        self.customer["current_total"] = self.customer["current_total"] + total
+        self.totalpayment.set( self.customer["current_total"] )
+    
+    def completeOrder(self):
+        outputstring = "Order For Customer: " + self.customer["customer_id"] + "\n"
+        for product in self.customer["products"]:
+            outputstring = outputstring + str(self.customer["products"][product][0])  + " " +  product + " Total: $" + str(self.customer["products"][product][1]) + "\n"
+        outputstring = outputstring + "Order Subtotal: $" + str(self.customer["current_total"]) + "\n"
+        outputstring = outputstring + "Tax(13%): $" + str(self.sales_tax) + "\n"
+        outputstring = outputstring + "Order Total: $" + str(self.sales_tax + self.customer["current_total"]) + "\n"
+        self.purchasesummary.set(outputstring)
+        
+def main():
+    Login_Window()
+    InformationForm()
+    
+    
+
+main()
